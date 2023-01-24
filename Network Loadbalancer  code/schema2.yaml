@@ -1,0 +1,479 @@
+title: Network Load Balancer
+description: Network Load Balancer Terraform Input Variables
+schemaVersion: 1.1.0
+version: "25012022"
+
+#####################################
+
+# Variable Groupings
+
+#####################################
+
+groupings:
+
+  - title: "Select Compartment"
+    variables:
+      - ${compartment_ocid}
+      - ${tenancy_ocid}
+      - ${region}
+    
+  - title: "Network Configuration"
+    variables:
+      - ${vcn_compartment_ocid}
+      - ${vcn_ocid}
+      - ${subnet_compartment_ocid}
+      - ${subnet_ocid}
+
+  - title: "Load balancer Configuration"
+    variables:
+      - ${is_preserve_source}
+      - ${is_preserve_source_destination}
+      - ${create_private_loadbalancer}
+      - ${is_private}
+
+  - title: "FinNonPrd Ext Dev SaaS ODI Network Load Balancer Configuration"
+    variables:
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_display_name}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_health_checker_port}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_health_checker_protocol}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_backend_set_name}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_backend_set_policy}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_display_name}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_port}
+      - ${FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_protocol}
+
+  - title: "FinNonPrd Dev Ext Network Load Balancer Configuration"
+    variables:
+      - ${FinNonPrd_Dev_Ext_LB_display_name}
+      - ${FinNonPrd_Dev_Ext_LB_GG_backend_set_name}
+      - ${FinNonPrd_Dev_Ext_LB_GG_backendset_policy}
+      - ${FinNonPrd_Dev_Ext_LB_GG_health_checker_port}
+      - ${FinNonPrd_Dev_Ext_LB_GG_health_checker_protocol}
+      - ${FinNonPrd_Dev_Ext_LB_GG_Listener_display_name}
+      - ${FinNonPrd_Dev_Ext_LB_GG_Listener_port}
+      - ${FinNonPrd_Dev_Ext_LB_GG_Listener_protocol}
+      - ${FinNonPrd_Dev_LB_BCKESET_backend_set_name}
+      - ${FinNonPrd_Dev_LB_BCKESET_backendset_policy}
+      - ${FinNonPrd_Dev_LB_BCKESET_health_checker_port}
+      - ${FinNonPrd_Dev_LB_BCKESET_health_checker_protocol}
+      - ${FinNonPrd_Dev_LB_BCKESET_Listener_display_name}
+      - ${FinNonPrd_Dev_LB_BCKESET_Listener_port}
+      - ${FinNonPrd_Dev_LB_BCKESET_Listener_protocol}
+      - ${FinNonPrd_Dev_MinDB_TCPS_backend_set_name}
+      - ${FinNonPrd_Dev_MinDB_TCPS_backendset_policy}
+      - ${FinNonPrd_Dev_MinDB_TCPS_health_checker_port}
+      - ${FinNonPrd_Dev_MinDB_TCPS_health_checker_protocol}  
+      - ${FinNonPrd_Dev_MinDB_TCPS_Listener_display_name}
+      - ${FinNonPrd_Dev_MinDB_TCPS_Listener_port}
+      - ${FinNonPrd_Dev_MinDB_TCPS_Listener_protocol}
+
+
+variables:
+
+#####################################
+
+# Common Compartment
+
+#####################################
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the Compartment to deploy resources
+    description: Choose the Compartment where to deploy the resources
+
+  tenancy_ocid:
+    visible: false
+    title: Tenancy OCID
+    description: Tenancy OCID
+
+  region:
+    visible: false
+    title: Region
+    description: Region
+
+#####################################
+
+# Network Configuration
+
+#####################################
+
+  vcn_compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the VCN Compartment
+    description: Choose the Compartment of VCN
+    required: true
+
+  vcn_ocid:
+    type: oci:core:vcn:id
+    visible: true
+    title: Select the VCN
+    description: Choose the VCN
+    dependsOn: 
+      compartmentId: ${vcn_compartment_ocid}
+    required: true
+
+  subnet_compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the Subnet Compartment
+    description: Choose the Subnet Compartment
+    required: true
+
+  subnet_ocid:
+    type: oci:core:subnet:id
+    visible:  true
+    title: Select the Subnet 
+    description: Choose the Subnet
+    dependsOn:
+      compartmentId: ${subnet_compartment_ocid}
+      vcnId: ${vcn_ocid}
+    required: true
+
+##################################################################
+
+# Load balancer Configuration
+
+####################################################################
+  is_preserve_source:
+    type: boolean
+    title: Preserve Source ?
+    description: Check Preserve Source IP to preserve the original source and destination header (IP addresses and ports) of each incoming packet all the way to the backend server
+    default: false
+    visible: true
+    required: true
+  
+  is_preserve_source_destination:
+    type: boolean
+    title: Preserve Source and Destination ?
+    default: false
+    visible: false
+    required: false
+
+  create_private_loadbalancer:
+    type: boolean
+    visible: true
+    title: Create Private Load Balancer ?
+    description: Specify whether to create private load balancer, if it is unchecked public load balancer will be created.
+    default: false
+    required: true
+
+  is_private:
+    type: boolean
+    visible: true
+    title: Load Balancer Private ?
+    description: Specify whether load balancer, is private or not.
+    default: false
+    required: true
+
+##################################################################
+
+# FinNonPrd Ext Dev SaaS ODI_Network Load balancer Configuration
+
+####################################################################
+
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_display_name:
+    type: string
+    visible: true
+    default: FinNonPrd_Ext_D2_SaaS_ODI_NLB
+    title: Network LoadBalancer Display Name
+    description: Provide a custom name for load balancer
+    required: true
+
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_health_checker_port:
+    type: number
+    visible: true
+    title:  Backend Set Health Check Port
+    description: Provide Backend Set Health Check Port
+    default: 22
+    required: true
+  
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_health_checker_protocol:
+    type: enum
+    title:  Health Check Protocol
+    description: Choose Health Check Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - HTTP
+      - HTTPS
+      - TCP
+      - UDP
+
+     
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_backend_set_name:
+    type: string
+    title: Backend Set Display Name
+    description: Custom Name for Network Load Balancer Backend Set
+    default: FinNonPrd_Ext_Dev_SaaS_ODI_NLB_backendset
+    visible: true
+    required: true
+
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_backend_set_policy:
+    type: enum
+    title: Backend Set Policy
+    description: Choose Backend Set Policy
+    visible: true
+    default: THREE_TUPLE
+    required: true
+    enum:
+      - TWO_TUPLE
+      - THREE_TUPLE
+      - FIVE_TUPLE
+  
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_display_name:
+    type: string
+    title: Listener Display Name
+    description: Custom Name for Network Load Balancer Listener
+    default: FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener
+    visible: true
+    required: true
+
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_port:
+    type: number
+    visible: true
+    title:  Listener Port
+    description: Provide Listener port for Network Load Balancer
+    default: 22
+    required: true
+
+  FinNonPrd_Ext_Dev_SaaS_ODI_NLB_Listener_protocol:
+    type: enum
+    title:  Listener Protocol
+    description: Choose Listener Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - TCP
+      - UDP
+      - TCP_AND_UDP
+
+##################################################################
+
+# FinNonPrd Dev Ext Load balancer Configuration
+
+####################################################################
+
+  FinNonPrd_Dev_Ext_LB_display_name:
+    type: string
+    visible: true
+    default: FinNonPrd_Dev2_Ext_LB
+    title: Network Load Balancer Display Name
+    description: Provide a custom name for load balancer
+    required: true
+
+  FinNonPrd_Dev_Ext_LB_GG_backend_set_name:
+    type: string
+    title: Backend Set Display Name
+    description: Custom Name for Network Load Balancer Backend Set
+    default: FinNonPrd_Dev_Ext_LB_GG_backendset
+    visible: true
+    required: true
+  
+  FinNonPrd_Dev_Ext_LB_GG_backendset_policy:
+    type: enum
+    title: Backend Set Policy
+    description: Choose Backend Set Policy
+    visible: true
+    default: THREE_TUPLE
+    required: true
+    enum:
+      - TWO_TUPLE
+      - THREE_TUPLE
+      - FIVE_TUPLE
+
+  FinNonPrd_Dev_Ext_LB_GG_health_checker_port:
+    type: number
+    visible: true
+    title:  Backend Set Health Check Port
+    description: Provide Backend Set Health Check Port
+    default: 22
+    required: true
+
+  FinNonPrd_Dev_Ext_LB_GG_health_checker_protocol:
+    type: enum
+    title:  Health Check Protocol
+    description: Choose Health Check Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - HTTP
+      - HTTPS
+      - TCP
+      - UDP
+
+  FinNonPrd_Dev_Ext_LB_GG_Listener_display_name:
+    type: string
+    title: Listener Display Name
+    description: Custom Name for Network Load Balancer Listener
+    default: FinNonPrd_Dev_Ext_LB_ListGG_Listener
+    visible: true
+    required: true
+
+  FinNonPrd_Dev_Ext_LB_GG_Listener_port:
+    type: number
+    visible: true
+    title:  Listener Port
+    description: Provide Listener port for Network Load Balancer
+    default: 2222
+    required: true
+
+  FinNonPrd_Dev_Ext_LB_GG_Listener_protocol:
+    type: enum
+    title: Choose Listener Protocol
+    description: Choose Listener Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - TCP
+      - UDP
+      - TCP_AND_UDP
+
+  FinNonPrd_Dev_LB_BCKESET_backend_set_name:
+    type: string
+    title: Backend Set Display Name
+    description: Custom Name for Network Load Balancer Backend Set
+    default: FinNonPrd_Dev_LB_BCKESET
+    visible: true
+    required: true
+  
+  FinNonPrd_Dev_LB_BCKESET_backendset_policy:
+    type: enum
+    title: Backend Set Policy
+    description: Choose Backend Set Policy
+    visible: true
+    default: THREE_TUPLE
+    required: true
+    enum:
+      - TWO_TUPLE
+      - THREE_TUPLE
+      - FIVE_TUPLE
+
+  FinNonPrd_Dev_LB_BCKESET_health_checker_port:
+    type: number
+    visible: true
+    title: Backend Set Health Check Port
+    description: Provide Backend Set Health Check Port
+    default: 22
+    required: true
+
+  FinNonPrd_Dev_LB_BCKESET_health_checker_protocol:
+    type: enum
+    title: Health Check Protocol
+    description: Choose Health Check Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - HTTP
+      - HTTPS
+      - TCP
+      - UDP
+
+  FinNonPrd_Dev_LB_BCKESET_Listener_display_name:
+    type: string
+    title: Listener Display Name
+    description: Custom Name for Network Load Balancer Listener
+    default: FinNonPrd_Dev_Ext_LB_LIST_1_Listener
+    visible: true
+    required: true
+
+  FinNonPrd_Dev_LB_BCKESET_Listener_port:
+    type: number
+    visible: true
+    title: Listener Port
+    description: Provide Listener port for Network Load Balancer
+    default: 22
+    required: true
+
+  FinNonPrd_Dev_LB_BCKESET_Listener_protocol:
+    type: enum
+    title: Listener Protocol
+    description: Choose Listener Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - TCP
+      - UDP
+      - TCP_AND_UDP
+
+  FinNonPrd_Dev_MinDB_TCPS_backend_set_name:
+    type: string
+    title: Backend Set Display Name
+    description: Custom Name for Network Load Balancer Backend Set
+    default: FinNonPrd_Dev_MinDB_TCPS
+    visible: true
+    required: true
+  
+  FinNonPrd_Dev_MinDB_TCPS_backendset_policy:
+    type: enum
+    title: Backend Set Policy
+    description: Choose Backend Set Policy
+    visible: true
+    default: THREE_TUPLE
+    required: true
+    enum:
+      - TWO_TUPLE
+      - THREE_TUPLE
+      - FIVE_TUPLE
+
+  FinNonPrd_Dev_MinDB_TCPS_health_checker_port:
+    type: number
+    visible: true
+    title: Backend Set Health Check Port
+    description: Provide Backend Set Health Check Port
+    default: 1610
+    required: true
+
+  FinNonPrd_Dev_MinDB_TCPS_health_checker_protocol:
+    type: enum
+    title: Health Check Protocol
+    description: Choose Health Check Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - HTTP
+      - HTTPS
+      - TCP
+      - UDP  
+
+  FinNonPrd_Dev_MinDB_TCPS_Listener_display_name:
+    type: string
+    title: Listener Display Name
+    description: Custom Name for Network Load Balancer Listener
+    default: FinNonPrd_Dev_Ext_LB_MinDB_TCPS_Listener
+    visible: true
+    required: true
+
+  FinNonPrd_Dev_MinDB_TCPS_Listener_port:
+    type: number
+    visible: true
+    title: Listener Port
+    description: Provide Listener port for Network Load Balancer
+    default: 1610
+    required: true
+
+  FinNonPrd_Dev_MinDB_TCPS_Listener_protocol:
+    type: enum
+    title: Listener Protocol
+    description: Choose Listener Protocol
+    visible: true
+    default: TCP
+    required: true
+    enum:
+      - TCP
+      - UDP
+      - TCP_AND_UDP
+
+  project_tag:
+    type: oci:identity:tag:value
+    title: Attach Tags
+    description: Attach the Tags
+    visible: true
+    required: true
