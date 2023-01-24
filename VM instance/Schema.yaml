@@ -1,0 +1,211 @@
+title: VM Terraform Input Variables
+description: VM Terraform Input Variables
+schemaVersion: 1.1.0
+version: "25012022"
+
+#####################################
+
+# Variable Groupings
+
+#####################################
+
+groupings:
+
+  - title: "Select Compartment"
+    variables:
+      - ${compartment_ocid}
+      - ${tenancy_ocid}
+      - ${region}
+
+  - title: "Instance Configuration"
+    variables:
+      - ${create_instance}
+      - ${instance_count}
+      - ${instance_display_name}
+      - ${instance_image_ocid}
+      - ${instance_shape}
+      - ${ssh_public_key}
+      - ${boot_volume_size_in_gbs}
+      #- ${create_block_volume}
+      #- ${block_volume_count}
+      #- ${volume_size}
+      #- ${attach_backup_policy}
+      #- ${backup_policy}
+
+  - title: "Network Configuration"
+    variables:
+      - ${vcn_compartment_ocid}
+      - ${vcn_ocid}
+      - ${subnet_compartment_ocid}
+      - ${subnet_ocid}
+
+variables:
+
+#####################################
+
+# Common Compartment
+
+#####################################
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the Compartment to deploy resources
+    description: Choose the Compartment where to deploy the resources
+
+  tenancy_ocid:
+    visible: false
+    title: Tenancy OCID
+    description: Tenancy OCID
+
+  region:
+    visible: false
+    title: Region
+    description: Region
+
+#####################################
+
+  #  Instance Configuration
+
+#####################################
+
+  create_instance:
+    title: Create  Instance ?
+    type: boolean
+    default: true
+    required: true
+  
+  instance_count:
+    title: Number of Instances
+    type: number
+    default: 1
+    required: true
+    visible: ${create_instance}
+
+  instance_display_name:
+    type: string
+    required: true
+    pattern: "^[a-zA-Z][a-zA-Z0-9]{0,15}$"
+    title: Instance Display Name
+    visible: ${create_instance}
+
+  instance_image_ocid:
+    visible: ${create_instance}
+    type: string
+    required: true
+    title: Instance Image OCID
+    default: ocid1.image.oc1.iad.aaaaaaaazswbv4b7v62dcrwxvnur3gh3actc3rcgdb2xgopgwxki6axij6jq
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      
+  instance_shape:
+    visible: ${create_instance}
+    type: string
+    required: true
+    default: VM.Standard2.1
+    title: Select Instance Shape
+    description: Please specify the Shape of the instance
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    visible: ${create_instance}
+    title: Provide SSH Public Key for Instance
+    description: Select the public key to be added to your instance
+    required: true
+
+  boot_volume_size_in_gbs:
+    visible: ${create_instance}
+    type: number
+    title: Size of Boot Volume in GB
+    description: Specify the boot volume size in GB (Minimum is 50GB)
+    required: true
+
+  #create_block_volume:
+   # visible: ${create_instance}
+    #type: boolean
+    #title: Create Block Volume ?
+    #required: true
+    #default: true  
+
+
+  #block_volume_count:
+   # type: number
+    #title: Number of block volumes
+    #default: 1
+    #required: true
+    #description: Specify the Number of Volumes to create
+    #visible: 
+     # and:
+      #  - ${create_block_volume}
+       # - ${create_instance}
+  
+
+  #volume_size:
+   # type: number
+    #title: Specify the size of block volumes in GB
+    #description: Specify the size of each block volume in GB
+    #default: 150
+    #required: true
+    #visible: 
+     # and:
+      #  - ${create_block_volume}
+       # - ${create_instance}
+
+
+  #attach_backup_policy:
+   # type: boolean
+    #title: Enable backup policy
+    #default: false
+    #required: false
+    #visible: 
+     # and:
+      #  - ${create_block_volume}
+      #  - ${create_instance}
+        
+  #backup_policy:
+   # type: string
+    #title: Custom Backup Policy OCID
+    #required:
+     # - ${attach_backup_policy}
+    #visible: 
+     # and:
+      #  - ${create_block_volume}
+      #  - ${create_instance}
+      #  - ${attach_backup_policy}
+
+  vcn_compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the VCN Compartment
+    description: Choose the Compartment of VCN
+
+  vcn_ocid:
+    type: oci:core:vcn:id
+    visible: true
+    title: Select the VCN
+    description: Choose the VCN
+    dependsOn: 
+      compartmentId: ${vcn_compartment_ocid}
+
+  subnet_compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the Subnet Compartment
+    description: Choose the Subnet Compartment
+
+  subnet_ocid:
+    type: oci:core:subnet:id
+    visible:  true
+    title: Select the Subnet 
+    description: Choose the Subnet
+    dependsOn:
+      compartmentId: ${subnet_compartment_ocid}
+      vcnId: ${vcn_ocid}
+      
+
+
+  project_tag:
+    type: oci:identity:tag:value
+    title: Attach Tags
+    description: Attach the Tags
+    visible: true
+    required: true
