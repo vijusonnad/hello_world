@@ -1,0 +1,116 @@
+title: OCI IAM Users Terraform Input Variables
+description: OCI IAM Users Terraform Input Variables
+schemaVersion: 1.1.0
+version: "20072022"
+
+
+groupings:
+
+  - title: "User Configuration"
+    variables:
+      - ${tenancy_ocid}
+      - ${region}
+      - ${useracct_user_name}
+      - ${useracct_email_id}
+      - ${useracct_user_description}
+      - ${useracct_group_ocid}
+      - ${useracct_can_use_api_keys}
+      - ${useracct_can_use_auth_tokens}
+      - ${useracct_can_use_console_password}
+      - ${useracct_can_use_customer_secret_keys}
+      - ${useracct_can_use_smtp_credentials}
+      - ${project_tag}
+
+
+#####################################
+
+# Variable
+
+#####################################
+variables:
+
+  tenancy_ocid:
+    visible: false
+    title: Tenancy OCID
+    description: Tenancy OCID
+
+  region:
+    visible: true
+    title: Region
+    description: Region
+
+
+  useracct_user_name:
+    type: string
+    visible: true
+    title: Provide User Name
+    description: This user name will be used to login
+    required: true
+
+  useracct_email_id:
+    type: string
+    visible: true
+    title: User Email ID
+    description: Provide email address
+    default: ""
+    required: true
+
+  useracct_user_description:
+    type: string
+    visible: true
+    title: User Description
+    description: User Description
+    required: true
+
+  useracct_group_ocid:
+    type: string
+    visible: true
+    title: Provide the group name to assigned to this user
+    description: Provide group name to be assigned for created user
+    required: true
+
+  useracct_can_use_api_keys:
+    type: boolean
+    visible: true
+    title: Enable User to login using API Keys
+    description: If it is enabled, user can authenticate to OCI SDK using API Signing Keys
+    required: true
+    default: true
+
+  useracct_can_use_auth_tokens:
+    type: boolean
+    visible: true
+    title: Enable User to login using Auth Tokens
+    description: If it is enabled, user can authenticate to OCI SDK using Auth Tokens
+    required: true
+    default: false
+
+  useracct_can_use_console_password:
+    type: boolean
+    visible: true
+    title: Enable User to login using User ID and Password
+    description: If it is enabled, user can login to OCI Console using User ID and Password
+    required: true
+    default: false
+
+  useracct_can_use_customer_secret_keys:
+    type: boolean
+    visible: true
+    title: Enable User to authenticate using Customer Secret Keys
+    description: If it is enabled, user can authenticate to OCI SDK using Customer Secret Keys
+    required: true
+    default: false
+
+  useracct_can_use_smtp_credentials:
+    type: boolean
+    visible: true
+    title: Enable User to use SMTP Credentials
+    description: If it is enabled, user can authenticate to OCI SDK using SMTP Credentials
+    required: true
+    default: false
+
+  project_tag:
+    type: oci:identity:tag:value
+    title: Attach Tags
+    description: Attach the Tags
+    visible: true
