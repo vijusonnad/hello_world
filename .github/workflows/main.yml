@@ -1,0 +1,64 @@
+# This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
+# with an API token for the Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
+# `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
+# to the "main" branch, `terraform apply` will be executed.
+
+
+name: 'Deploy Infra stacks in OCI'
+
+on:
+  push:
+    #types:
+      #- closed
+    branches:
+      - "main"
+env:
+#  #pprovers: shuk-yin-lee_uhg,sarath-ananthu_uhg,anand-gummadi_uhg,dinesh-villuri_uhg
+  PROVIDER_NAME: "Github"
+  REGION: "us-ashburn-1"
+  BRANCH_NAME: "main"
+  STACK_NAME_User: "Stack_user_GitHubActions"
+  WORKING_DIRECTORY_User: "terraform/stack2/iam/oci_iam_user"
+  REPO_URL: "https://github.com/vijusonnad/hello_world.git"
+  TF_VERSION: "1.0.x"
+
+permissions:
+  contents: read
+
+jobs:
+ Stack_user:
+   runs-on: ubuntu-latest
+    #needs: Stack1_Compartments
+    #environment: terraform-plan
+   steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: 'Writing config files'
+        run: |
+          mkdir ~/.oci
+          echo "[DEFAULT]" >> ~/.oci/config
+          echo "user=${{secrets.USER_OCID}}" >> ~/.oci/config
+          echo "fingerprint=${{secrets.FINGERPRINT}}" >> ~/.oci/config
+          echo "compartment_ocid=${{secrets.COMPARTMENT_OCID}}" >> ~/.oci/config
+          echo "region=${{secrets.REGION}}" >> ~/.oci/config
+          echo "tenancy=${{secrets.TENANCY_OCID}}" >> ~/.oci/config
+          echo "key_file=~/.oci/key.pem" >> ~/.oci/config
+          echo "${{secrets.PRIVATE_KEY_FILE}}" >> ~/.oci/key.pem
+          echo "~/.oci/config file "
+          cat ~/.oci/config
+          echo " ~/.oci/key.pem file"
+          cat ~/.oci/key.pem
+          ls -lta ~/.oci
+          ls -lta ~
+          pwd
+      - name: 'Install OCI CLI'
+        run: |
+          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+          chmod +x install.sh
+          ./install.sh --accept-all-defaults
+          #exec -l $SHELL
+          echo " Fixing file permissions and testing oci"
+          /home/runner/bin/oci setup repair-file-permissions --file ~/.oci/config
+          /home/runner/bin/oci setup repair-file-permissions --file ~/.oci/key.pem
+          echo " oci os ns get"
+          /home/runner/bin/oci os ns get
