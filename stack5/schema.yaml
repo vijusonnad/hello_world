@@ -1,0 +1,129 @@
+title: Create Object Storage Bucket 
+description: Object Storage Bucket Terraform Input Variables
+schemaVersion: 1.1.0
+version: "25012022"
+
+#####################################
+
+# Variable Groupings
+
+#####################################
+
+groupings:
+
+  - title: "Select Compartment"
+    variables:
+      - ${compartment_ocid}
+      - ${tenancy_ocid}
+      - ${region}
+    
+  - title: "Bucket Configuration"
+    variables:
+      - ${bucket_name}
+      - ${bucket_storage_tier}
+      - ${bucket_access_type}
+      - ${bucket_versioning}
+      - ${auto_tiering}
+      - ${object_event_enabled}
+      - ${project_tag}
+  
+
+variables:
+
+#####################################
+
+# Common Compartment
+
+#####################################
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    title: Select the Compartment to deploy resources
+    description: Choose the Compartment where to deploy the resources
+
+  tenancy_ocid:
+    visible: false
+    title: Tenancy OCID
+    description: Tenancy OCID
+
+  region:
+    visible: false
+    title: Region
+    description: Region
+ 
+
+#####################################
+
+  # Bucket Configuration
+
+#####################################
+
+  bucket_name:
+    type: string
+    required: true
+    visible: true
+    default: "dd_Bucket"
+    title: "Object Storage Bucket name"
+    description: "Choose Objectg Storage Bucket name"
+   
+  bucket_storage_tier:
+    type: enum
+    required: false
+    visible: true
+    default: "Standard"
+    title: "Object Storage-Tier"
+    description: "Choose Object Storage-Tier"
+    enum:
+          - "Standard"
+          - "Archive"
+
+  bucket_access_type:
+    type: enum
+    required: false
+    visible: true
+    default: "NoPublicAccess"
+    title: "Storage Bucket Access Type"
+    description: "NoPublicAccess- is enabled by default, in which only private access is allowed, that is, allows an authenticated caller to access the bucket and its contents. When ObjectRead- is enabled on the bucket, public access is allowed for the GetObject, HeadObject, and ListObjects operations. When ObjectReadWithoutList- is enabled on the bucket, public access is allowed for the GetObject and HeadObject operations."
+    enum:
+          - "NoPublicAccess"
+          - "ObjectRead"
+          - "ObjectReadWithoutList"
+
+  bucket_versioning:
+    type: enum
+    required: false
+    visible: true
+    default: "Enabled"
+    title: "Storage Bucket Versioning"
+    description: "Choose enabling Storage Bucket Version"
+    enum:
+          - "Enabled"
+          - "Disabled"
+
+  auto_tiering:
+    type: enum
+    required: false
+    visible: true
+    default: "InfrequentAccess"
+    title: "Storage Bucket Auto-Tiering"
+    description: "Choose Storage Bucket Auto-Tiering Type"
+    enum:
+          - "InfrequentAccess"
+          - "Disable "
+          - "Enable "
+
+  object_event_enabled:
+    type: boolean
+    required: false
+    visible: true
+    title: Create Object Event for Bucket
+    description: Specify whether to enable object event, if unchecked no object event created
+  
+
+  project_tag:
+    type: oci:identity:tag:value
+    title: Attach Tags
+    description: Attach the Tags
+    visible: true
+    required: false
+
