@@ -15,7 +15,7 @@ on:
       - 'stack5/*'
 env:
 # source provider
-  PROVIDER_NAME: "github_token"
+  PROVIDER_NAME: "github"
   REGION: "us-ashburn-1"
   BRANCH_NAME: "feature-objectstorage"
   STACK_NAME: "dd_stack5_objectstorage"
