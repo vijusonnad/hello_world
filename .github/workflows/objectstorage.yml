@@ -15,13 +15,13 @@ on:
       - 'stack5/dd_objectstorage/*'
 env:
 # source provider
-  PROVIDER_NAME: "dd_github_token"
+  PROVIDER_NAME: "github_token"
   REGION: "us-ashburn-1"
   BRANCH_NAME: "feature-objectstorage"
   STACK_NAME: "dd_stack5_objectstorage"
   WORKING_DIRECTORY: "stack5/dd_objectstorage"
   
-  REPO_URL: "https://github.com/ebizon-cloud-llc/delta_dental.git"
+  REPO_URL: "https://github.com/vijusonnad/hello_world.git"
   TF_VERSION: "1.0.x"
 
 permissions:
